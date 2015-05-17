@@ -1,0 +1,294 @@
+body { font-family: "Verdana", "Arial", "Helvetica", "sans-serif"; font-size: 12px; line-height: 180%; 
+    margin:0;
+    padding: 0;
+    overflow: hidden;
+    /*这个body的overflow: hidde及其重要！！不加的话会加长body的长度*/
+}
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+/*---------------PAge1的CSS---------------------------*/
+.header{
+    background:url(images/banner.jpg)no-repeat;
+    background-size:cover;
+    min-height:400px;
+    position:relative;
+}
+.header-profile{
+    position:absolute;
+    bottom:-26%;
+    left: 42%;
+}
+.header-top{
+    text-align:center;
+    margin-top:8%;
+}
+.header-top h2{
+    font-size:35px;
+    font-weight:800;
+    color:#2b3b4b;
+    margin:10px 0 15px 0;    
+}
+.header-top small {
+    font-weight:400;
+    font-size:20px;
+/*    color:#7f8a90
+    font-size: 16px;
+    font-weight:300;*/
+
+    /*color:#7f8a90;*/
+    color:#4B4B4B;
+}
+/*.clearfix{
+    clear:both;
+}*/
+/*=----------------=page2css================================*/
+p,h3{
+        margin:0;
+        padding:0;
+}
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: 100px;
+  margin-left: 100px;
+}
+h3.top-title{
+    font-weight:800;
+    font-size:28px;
+    margin-bottom: 20px;
+    text-align:center;
+}
+ul.about-details{
+    padding: 0;
+}
+ul.about-details li{
+    display: block;
+    margin:1.5em 0;
+}
+ul.about-details li p{
+    font-weight:800;
+    font-size:20px;
+    color:#7f8a90;
+}
+ul.about-details li p span{
+    font-weight:400;
+    color:#7f8a90;
+}
+ul.about-details li p span a{
+    font-weight:400;
+    color:#7f8a90;
+    text-decoration:none;
+    cursor:pointer;
+}
+span.line{
+    width:15%;
+    height:2px;
+    background:#2b3b4b;
+    display: block;
+    margin:0 auto;
+}
+.about-top p.about-p{
+    font-weight:700;
+    font-size:18px;
+    color:#7f8a90;
+    margin:10px 0 15px 0;
+}
+.about-top p{
+    font-weight:400;
+    font-size:17px;
+    color:#7f8a90;
+}
+.about-row-column h3{
+    font-size:22px;
+    color:#7f8a90;
+    font-weight:800;
+    margin-bottom: 50px;
+
+}
+
+a.download{
+    color:#fff;
+    font-size:20px;
+    text-decoration:none;
+    background:#2980b9;
+    padding:20px 15px;
+    box-shadow: 1px 1px 3px #3e3e3e;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -o-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+}
+a.download:hover{
+    background:#6ab8ea;
+    border-bottom:4px solid #2980b9;
+    transition:0.5s all;
+    -webkit-transition:0.5s all;
+    -o-transition:0.5s all;
+    -ms-transition:0.5s all;
+    -moz-transition:0.5s all;
+}
+a.download span{
+    background:url(images/dold.png)no-repeat;
+    width:32px;
+    height:32px;
+    display:inline-block;
+    vertical-align:middle;
+    
+}
+/*---------------PAge3的CSS---------------------------*/
+
+.btn {
+    /*display: block;*/
+    /*float:left;*/
+  display: inline-block;
+  padding: 6px 12px;
+  margin-right:20px;
+  margin-bottom: 0;
+  font-size: 14px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #5cb85c;
+}
+
+.btn:hover {
+  color: #333;
+  text-decoration: none;
+}
+.page3container{
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  background-image:url("images/kongbai.png");
+  width:700px;
+  height:400px;
+  box-shadow:2px 2px 5px #292929;
+
+/*  border:1px solid red;*/
+  position:relative;
+  overflow: hidden;
+
+}
+.btncon{
+       padding:0 10px;
+        margin-right: auto;
+        margin-left: auto;
+        margin-top:30px;
+}
+.page3bg{
+    width:100%;
+    height:100%;
+    /*border:1px solid red;*/
+    margin-top:70px;
+}
+.upload{
+        /*height:30px;
+        width:50px;
+        overflow: hidden;*/
+        float:left;
+        margin-right:20px;
+}
+
+/*=----------------======================================*/
+
+
+/*绝对定位固定在屏幕右侧做导航z-index=1 覆盖住没设置z-index（z-index<1）的内容*/
+.side-nav{
+    position:fixed;
+    top:200px;
+    right:20px;
+    z-index:1;
+}
+.side-nav ul.nav-side-nav{
+    text-align: center;
+    list-style:none;
+    margin:0;
+    padding-left:0;
+}
+.side-nav ul.nav-side-nav >li{
+    display: block;
+    line-height:1.45em;
+    margin:0;
+    padding:8px 0;
+}
+.side-nav ul.nav-side-nav >li>a{
+    display: block;
+    width:10px;
+    height: 10px;
+    border-radius: 50%;
+    /*通过border-radius: 50%把方块变成圆形*/
+    background-color: #e2e2e2;
+}
+.side-nav ul.nav-side-nav >li>a.active{
+    background-color: #000;
+}
+/*----------------导航css结束-----------------*/
+
+/*---------------onpage效果css-------------------*/
+/*通过function dingwei（）动态切换id="container"的class
+既动态切换css3属性translateY，动态效果设置为1秒钟，ease-out以慢速结束的过渡效果
+以此达到onepage效果*/
+.body1 { 
+    overflow: hidden;
+    -webkit-transform:  translate(0, 0px);
+    -webkit-transition: all  1s ease-out;
+    -moz-transform:  translate(0, 0px);
+    -moz-transition:  all  1s ease-out;
+    transform:  translate(0, 0px);
+    transition:  all  1s ease-out;
+}
+.body2 { 
+    overflow: hidden;
+    -webkit-transform:  translate(0, -800px);
+    -webkit-transition: all  1s ease-out;
+    -moz-transform:  translate(0, -800px);
+    -moz-transition:  all  1s ease-out;
+    transform:  translate(0, -800px);
+    transition:  all  1s ease-out;
+}
+.body3 { 
+    overflow: hidden;
+    -webkit-transform:  translate(0, -1600px);
+    -webkit-transition: all  1s ease-out;
+    -moz-transform:  translate(0, -1600px);
+    -moz-transition:  all  1s ease-out;
+    transform:  translate(0,-1600px);
+    transition:  all  1s ease-out;
+} 
+/*----------------onpage效果css结束------------------------------*/
+
+/*---------------------整个内容分三页------------------------------*/
+#div1{
+    width:100%;
+    height:800px;
+    border: 0px solid transparent;
+    /*background-color: green;*/
+}
+#div2{
+    width:100%;
+    height:800px;
+    border: 0px solid transparent;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    /*background-color: yellow;*/
+}
+#div3{
+    width:100%;
+    height:800px;
+    border: 1px solid transparent;
+    /*background-color: gray;*/
+    background-image: url("images/bg1.png");
+    background-size: 100% auto
+}
+/*---------------------整个内容分三页------------------------------*/

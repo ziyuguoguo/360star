@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title></title>
+<link href="./body.css" rel='stylesheet' type='text/css' />
+
+<script type="text/javascript">
+// var number=1;
+var $ = function (flag) {
+   return document.getElementById(flag);
+}
+// ----------------------------------------------------------------------
+function Drag(id) {
+        $(id).onmousedown = function (e) {            
+            var page = {//获取位置函数包，兼容ff/ie
+                //获取当前事件
+                event: function (evt) {
+                   //ff可直接在参数中直接传事件evt；IE则不能，只可window.event
+                    var ev = evt || window.event; 
+                    //||和&&（逻辑或逻辑与）在JS中经常使用。
+                    //能够精简代码起到逻辑判断的作用。
+                    //在此例中的意思是有evt就用evt，没有evt再用window.event
+                    return ev;
+                },
+                 //PageX/Y：距离文档左上角的距离（包括滚动条），与clientX/Y有本质区别。clientX/Y是距离当前显示窗口左上角的距离（不包括滚动条）
+                //ff有PageX/Y，IE比较悲剧，没这个属性，只能拿当前距窗口的位置clientX/Y和滚动条已滑动了多少document.body.scrollLeft/Top相加。
+                //得到的效果与PageX/Y相似。当存在滚动条时：e.pageX==e.clientX + document.body.scrollLeft
+                //当没有滚动条出现时：PageX/Y和clientX/Y是一个意思。
+                
+                //后文中获取tx，ty是为了赋值给img绝对定位的top和left  img的绝对定位是相对于#page3container这个容器的，
+                //但是通过page.pageX(e)得到的是鼠标相对于文档左上角（或者说body）的定位。所以我们需要获取#page3container相对于文档左上角的定位，
+                //并且通过page.pageX(e)得到的定位减去#page3container相对于文档左上角的定位就是鼠标相对于容器的定位啦！！
+                
+                //$("page3container").offsetLeft就是图片所在容器相对于父对象中进行定位了（position不是默认值static就叫定位了）的容器的左边距
+                //但是我特意在#page3container的父对象中不进行任何定位，那他的父对象就是body，也就是文档左上角了。
+                //那么$("page3container").offsetLeft就是#page3container容器相对于文档左上角的定位
+                
+                //-------------------------只有firefox/ie有这个问题-------------------------
+                //pageY里e.pageY- $("page3container").offsetTop + page3firefoxIE(1600)的 +page3firefoxIE 是第三页向上飘了1600.
+                //就是.body3中的   -webkit-transform:  translate(0, -1600px);  所以这里要加回来！
+                //-------------------------只有firefox有这个问题-------------------------
+
+                pageX: function (evt) {
+                    var e = this.event(evt);
+                    return e.pageX- $("page3container").offsetLeft  || (e.clientX + document.body.scrollLeft- $("page3container").offsetLeft );
+                },
+                pageY: function (evt) {
+                    var e = this.event(evt);
+                    return e.pageY- $("page3container").offsetTop +page3firefoxIE  || (e.clientY + document.body.scrollTop - $("page3container").offsetTop +page3firefoxIE );
+                },
+                //layerX/Y offsetX/Y  都是鼠标点击相对于层的位置。ff是layer ie是offset
+                //如果不考虑这个属性。那每次拖拽之后图片的左上角都会和你的鼠标位置对其，而不是原来点击图片的位置。
+                layerX: function (evt) {
+                    var e = this.event(evt);
+                    return e.layerX || e.offsetX;
+                },
+                layerY: function (evt) {
+                    var e = this.event(evt);
+                    return e.layerY || e.offsetY;
+                }
+            } 
+            var x = page.layerX(e);
+            var y = page.layerY(e);        
+            document.onmousemove = function (e) {
+            //动态捕获在文档中滑动时当前的XY坐标，并赋值到绝对定位中，实现拖动效果        
+                var tx = page.pageX(e) - x;
+                var ty = page.pageY(e) - y;
+                // alert(ty); 
+                $(id).style.left = tx + "px";
+                $(id).style.top = ty + "px";
+            }
+            document.onmouseup = function () {
+            //鼠标抬起，取消滑动事件.
+                document.onmousemove = null;
+            }
+            return false;
+            /*!!!!!!这个return false 是精髓！！ 
+                加了这个拖拽图片时就不会产生在新窗口打开的情况了。
+                一开始我拖拽的时候图片总是在新窗口打开。
+                我看别人的图片拖拽不出现新窗口打开的情况。就对比了一下我的和他的。加了个return false居然成了。
+                但是具体为什么我也不太清楚。
+                我猜应该是阻止默认事件吧┑(￣Д ￣)┍  */
+        }
+}
+function resize(){
+    document.getElementById("page3img").style.left=0;
+    document.getElementById("page3img").style.top=0;
+}
+function small(){ 
+    var height1=images1.height; 
+    var width1=images1.width; 
+    images1.height=height1/1.2; 
+    images1.width=width1/1.2; 
+}
+function big(){ 
+    var height1=images1.height; 
+    var width1=images1.width; 
+    images1.height=height1*1.2; 
+    images1.width=width1*1.2; 
+}
+
+function getFileUrl(sourceId) {
+    var url;
+    if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+        url = document.getElementById(sourceId).value;
+    } else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
+        url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+    } else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
+        url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+    }
+    return url;
+}
+
+/**
+ * 将本地图片 显示到浏览器上
+ */
+function preImg(sourceId, targetId) {
+    var url = getFileUrl(sourceId);
+    var imgPre = document.getElementById(targetId);
+    imgPre.src = url;
+}
+// ----------------------------------------------------------------------
+
+// function addEvent(element, type, handler) {
+//             if (element.addEventListener) {
+//                 element.addEventListener(type, handler, false);
+//             } else {
+//                 element['on' + type] = handler;
+//             }
+// }
+
+window.onload=function(){
+    //这里的滚轮事件暂且不考虑IE10以下的浏览器。因为我使用了CSS3 
+    //firefox的滚轮事件比较特殊，滚轮事件有特殊的名字DOMMouseScroll
+    //且firefox的滚轮向下是+3向上滑-3 和其他主流浏览器不同
+    //除firefox以外的主流浏览器都是向下滑是-120向上滑是+120
+    //这里就要解决一个兼容性问题
+    //用navigator.userAgent.indexOf('Firefox') >= 0判断是否为firefox
+    var mousewheel="mousewheel";//除了火狐 滚轮事件都叫mousewheel
+    number=1;//当前页面是哪页，设置成全局变量！好让后面dingwei函数中的number=num捕获到
+
+    //滚到第三页的时候页面向上飘了1600，这里出现一个兼容问题！
+    //在FireFox/IE中定位时 ，就是在
+    //pageY: function (evt) {
+    //              var e = this.event(evt);
+    //              return e.pageY- $("page3container").offsetTop +1600  || (e.clientY + document.body.scrollTop - $("page3container").offsetTop +1600 );
+    //         },
+    //必须要加上飘上去的这1600才能正常定位，但非FireFox/IE不用加上这1600.
+    //那我们就定义一个全局变量 用来兼容firefox/IE
+    page3firefoxIE=0;
+    if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+        page3firefoxIE=1600;//兼容IE定位异常
+    }
+     if (navigator.userAgent.indexOf('Firefox') >= 0)
+    {   
+        page3firefoxIE=1600;//兼容firefox定位异常
+
+        mousewheel="DOMMouseScroll"//火狐的滚轮叫DOMMouseScroll向下划+3向上滑-3
+        window.addEventListener(mousewheel,function(event) {  
+        var direction=event.detail/3;//向下+1，向上-1
+        number=number+direction;//当前是第几篇
+        if(number<1){number=number%3+3};//当前页面循环
+        if(number>3){number=number%3};
+        // alert(event.detail);
+
+        dingwei(number);//进行定位
+        })
+    }
+    else {
+        //为了继续使用dingwei函数，这里将direction取反，那么FF和非FF浏览器的direction值就一样了
+        //就可以再次使用dingwei函数不做任何调整
+        window.addEventListener(mousewheel,function(event) {  
+        var ev = event || window.event; 
+        var direction=ev.wheelDelta/120;
+        // alert(ev.wheelDelta);
+        direction=-direction//direction取反，和FF浏览器的状态达成一致，向下+1，向上-1
+        number=number+direction;//当前是第几篇
+        if(number<1){number=number%3+3};//当前页面循环
+        if(number>3){number=number%3};
+        dingwei(number);//进行定位
+        });
+    }
+
+
+    Drag("page3img");//进行拖拽
+}
+function dingwei(num){
+    number=num//设置成当前页面号    
+    //先清空导航的active类，后面再根据当前页面号加上active
+    var li=document.getElementsByTagName("li");
+    for(var i=0; i<li.length; i++) {
+        li[i].childNodes[0].className="";
+    }
+    //为当前页面号的导航附加active类，圆点变为黑色
+    li[number-1].childNodes[0].className="active";
+    //根据当前页面号进行切换类，切换css3属性translateY，以达到动画效果
+    if(num==1){
+    document.getElementById("container").className="body1"; 
+   }else if(num==2){
+    document.getElementById("container").className="body2"; 
+   }else if(num==3){
+    document.getElementById("container").className="body3";
+   }
+}
+</script>
+</head> 
+<body class="">
+<div id="nav" class="side-nav" role="navigation">
+    <ul class="nav-side-nav">
+        <li class="aaaa"><a class="active" href="javascript:dingwei(1);"></a></li>
+        <li><a class="" href="javascript:dingwei(2);"></a></li>
+        <li><a class="" href="javascript:dingwei(3);"></a></li>
+    </ul>
+</div>
+<div id="container" class="body1">
+    <div id="div1">
+        <div class="header">
+                <div class="header-profile">
+                <img src="images/zhaopian.png" style="width:200px;height:200px;"/>
+                </div>
+        </div>
+        <div class="header-top">
+                <h2>廉&nbsp;鑫</h2>
+                <small>家在天津&nbsp;武汉上学&nbsp;想去北京上班的 <br>前&nbsp;端&nbsp;攻&nbsp;城&nbsp;狮</small>
+        </div>
+    </div>
+    <div id="div2">
+        <div class="container">
+
+            <div class="about-top">
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <h3 class="top-title">About Me</h3>
+                <span class="line"></span>
+                <p class="about-p">熟练掌握HTML、CSS(HTML5、CSS3.0)、DOM、Ajax等技术以及DIV+CSS的页面布局.</p>
+                <p class="about-p">相当熟练的掌握JavaScript,不敢说精通,但是说熟练又感觉对不起自己<img style="width:60px;length:60px;"src="images/02.gif" /></p>
+                <p class="about-p" style="">熟练使用jQuey Bootstrap框架。</p>
+                <p class="about-p" style="">读过bootstrap的JS插件源码，自认为可以仿照着开发jquery插件，造轮子还是没问题的<img style="width:60px;length:60px;"src="images/01.gif" /></p>
+                <p>PS:这三屏和全屏滚动效果都是用css3和<b style="color:#000">原生</b>Javascript写的哟~...老师连jquery都不让用</p>
+                <div class="about-row-column" style="float:left;margin-right:10px;margin-top:30px;">
+                    <ul class="about-details">
+                        <li><p>Birthday: <span>1993/12/28</span></p></li>
+                        <li><p>Phone: <span>13026186735</span></p></li>
+                        <li><p>Email:  <span><a href="mailto:623047470@qq.com">623047470@qq.com</a></span></p></li>
+                        <li><p>Github: <span><a href="https://github.com/l27390587">https://github.com/l27390587</a></span></p></li>
+                        <!-- <li><p>Address: <span>123 Ipsy Street, Lorem, Ipsy</span></p></li> -->
+                    </ul>
+                </div>
+                <div class="about-row-column" style="float:left;margin-left:10px;margin-top:40px;">
+                    <h3>Resume</h3>
+                    <a href="jianli.doc" class="download"><span></span>简&nbsp;历&nbsp;下&nbsp;载</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="div3">
+        <div id="page3bg" class="page3bg">
+            <div  id="page3container"  class="page3container" style="">
+                <img id="page3img" name='images1'  src='images/background1.png'  style="left:0; top:0; position: absolute; cursor: pointer;" />
+            </div>
+
+            <div  class="btncon" style=" height:50px; width:600px;">
+                <div class="upload" style=" float:left">
+                <input type="file" name="imgOne" id="imgOne" onchange="preImg(this.id,'page3img');" />
+                </div>
+                <a class="btn" href="javascript:small();">small</a>
+                <a class="btn" href="javascript:big();">big</a>
+                <a class="btn" href="javascript:resize();">resize</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body> 
+</html>

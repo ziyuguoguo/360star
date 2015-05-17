@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title></title>
+<style type="text/css"> 
+body { font-family: "Verdana", "Arial", "Helvetica", "sans-serif"; font-size: 12px; line-height: 180%; } 
+body{
+    margin:0;
+    padding: 0;
+    /*background-image:url("background.png") ;*/
+}
+body{
+    background-image: url("bg1.png");
+    background-size: 100% auto
+}
+.btn {
+    /*display: block;*/
+    /*float:left;*/
+  display: inline-block;
+  padding: 6px 12px;
+  margin-right:20px;
+  margin-bottom: 0;
+  font-size: 14px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #5cb85c;
+}
+
+.btn:hover {
+  color: #333;
+  text-decoration: none;
+}
+.page3container{
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  background-image:url("kongbai.png");
+  width:700px;
+  height:400px;
+  box-shadow:1px 1px 3px #292929;
+
+/*  border:1px solid red;*/
+  position:relative;
+  overflow: hidden;
+
+}
+.btncon{
+       padding:0 10px;
+        margin-right: auto;
+        margin-left: auto;
+        margin-top:30px;
+}
+.page3bg{
+    width:100%;
+    height:100%;
+    /*border:1px solid red;*/
+    margin-top:70px;
+}
+.upload{
+        /*height:30px;
+        width:50px;
+        overflow: hidden;*/
+        float:left;
+        margin-right:20px;
+}
+</style> 
+<script type="text/javascript">
+window.onload=function(){
+    // alert("aaaaa");
+    Drag("page3img");
+}
+//简易获取dom对象
+var $ = function (flag) {
+   return document.getElementById(flag);
+}
+function Drag(id) {
+        $(id).onmousedown = function (e) {            
+            var page = {//获取位置函数包，兼容ff/ie
+                //获取当前事件
+                event: function (evt) {
+                   //ff可直接在参数中直接传事件evt；IE则不能，只可window.event
+                    var ev = evt || window.event; 
+                    //||和&&（逻辑或逻辑与）在JS中经常使用。
+                    //能够精简代码起到逻辑判断的作用。
+                    //在此例中的意思是有evt就用evt，没有evt再用window.event
+                    return ev;
+                },
+                //PageX/Y：距离文档左上角的距离（包括滚动条），与clientX/Y有本质区别。clientX/Y是距离当前显示窗口左上角的距离（不包括滚动条）
+                //ff有PageX/Y，IE比较悲剧，没这个属性，只能拿当前距窗口的位置clientX/Y和滚动条已滑动了多少document.body.scrollLeft/Top相加。
+                //得到的效果与PageX/Y相似。当存在滚动条时：e.pageX==e.clientX + document.body.scrollLeft
+                //当没有滚动条出现时：PageX/Y和clientX/Y是一个意思。
+                
+                //后文中获取tx，ty是为了赋值给img绝对定位的top和left  img的绝对定位是相对于#page3container这个容器的，
+                //但是通过page.pageX(e)得到的是鼠标相对于文档左上角（或者说body）的定位。所以我们需要获取#page3container相对于文档左上角的定位，
+                //并且通过page.pageX(e)得到的定位减去#page3container相对于文档左上角的定位就是鼠标相对于容器的定位啦！！
+                
+                //$("page3container").offsetLeft就是图片所在容器相对于父对象中进行定位了（position不是默认值static就叫定位了）的容器的左边距
+                //但是我特意在#page3container的父对象中不进行任何定位，那他的父对象就是body，也就是文档左上角了。
+                //那么$("page3container").offsetLeft就是#page3container容器相对于文档左上角的定位
+
+
+                pageX: function (evt) {
+                    var e = this.event(evt);
+                    return e.pageX- $("page3container").offsetLeft || (e.clientX + document.body.scrollLeft- $("page3container").offsetLeft );
+                },
+                pageY: function (evt) {
+                    var e = this.event(evt);
+                    return e.pageY- $("page3container").offsetTop || (e.clientY + document.body.scrollTop - $("page3container").offsetTop);
+                },
+                //layerX/Y offsetX/Y  都是鼠标点击相对于层的位置。ff是layer ie是offset
+                //如果不考虑这个属性。那每次拖拽之后图片的左上角都会和你的鼠标位置对其，而不是原来点击图片的位置。
+                layerX: function (evt) {
+                    var e = this.event(evt);
+                    return e.layerX || e.offsetX;
+                },
+                layerY: function (evt) {
+                    var e = this.event(evt);
+                    return e.layerY || e.offsetY;
+                }
+            } 
+            var x = page.layerX(e);
+            var y = page.layerY(e);        
+            document.onmousemove = function (e) {
+            //动态捕获在文档中滑动时当前的XY坐标，并赋值到绝对定位中，实现拖动效果   
+                // alert(tx);       
+                var tx = page.pageX(e) - x;
+                var ty = page.pageY(e) - y;
+                // alert("aaaa");
+                $(id).style.left = tx + "px";
+                $(id).style.top = ty + "px";
+            }
+            document.onmouseup = function () {
+            //鼠标抬起，取消滑动事件.
+                document.onmousemove = null;
+            }
+            return false;
+            /*!!!!!!这个return false 是精髓！！ 
+                加了这个拖拽图片时就不会产生在新窗口打开的情况了。
+                一开始我拖拽的时候图片总是在新窗口打开。
+                我看别人的图片拖拽不出现新窗口打开的情况。就对比了一下我的和他的。加了个return false居然成了。
+                但是具体为什么我也不太清楚。
+                我猜应该是阻止默认事件吧┑(￣Д ￣)┍  */
+        }
+}
+function resize(){
+    document.getElementById("page3img").style.left=0;
+    document.getElementById("page3img").style.top=0;
+}
+function small(){ 
+    var height1=images1.height; 
+    var width1=images1.width; 
+    images1.height=height1/1.2; 
+    images1.width=width1/1.2; 
+}
+function big(){ 
+    var height1=images1.height; 
+    var width1=images1.width; 
+    images1.height=height1*1.2; 
+    images1.width=width1*1.2; 
+}
+
+function getFileUrl(sourceId) {
+    var url;
+    if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+        url = document.getElementById(sourceId).value;
+    } else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
+        url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+    } else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
+        url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+    }
+    return url;
+}
+
+/**
+ * 将本地图片 显示到浏览器上
+ */
+function preImg(sourceId, targetId) {
+    var url = getFileUrl(sourceId);
+    var imgPre = document.getElementById(targetId);
+    imgPre.src = url;
+}
+</script>
+</head> 
+<body>
+
+<div id="page3bg" class="page3bg">
+<div  id="page3container"  class="page3container" style="">
+    <img id="page3img" name='images1'  src='background1.png'  style="left:0; top:0; position: absolute; cursor: pointer;" />
+</div>
+
+<div  class="btncon" style=" height:50px; width:600px;">
+        <div class="upload" style=" float:left">
+            <input type="file" name="imgOne" id="imgOne" onchange="preImg(this.id,'page3img');" />
+         </div>
+        <a class="btn" href="javascript:small();">small</a>
+        <a class="btn" href="javascript:big();">big</a>
+        <a class="btn" href="javascript:resize();">resize</a>
+
+</div>
+</div>
+</body> 
+</html>
