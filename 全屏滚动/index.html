@@ -117,15 +117,13 @@ window.onload=function(){
 
     var mousewheel="mousewheel";//除了火狐 滚轮事件都叫mousewheel
     number=1;//当前页面是哪页，设置成全局变量！好让后面dingwei函数中的number=num捕获到
+    numbercache=0;//记录滚轮在设置好的间隔中（interval）滚动了多少，若大于0，
      if (navigator.userAgent.indexOf('Firefox') >= 0)
     {
         mousewheel="DOMMouseScroll"//火狐的滚轮叫DOMMouseScroll向下划+3向上滑-3
         window.addEventListener(mousewheel,function(event) {  
         var direction=event.detail/3;//向下+1，向上-1
-        number=number+direction;//当前是第几篇
-        if(number<1){number=number%3+3};//当前页面循环
-        if(number>3){number=number%3};
-        dingwei(number);//进行定位
+        numbercache=numbercache+direction;//在时间间隔间隔中滚了多少
         })
     }
     else 
@@ -137,12 +135,26 @@ window.onload=function(){
         var direction=ev.wheelDelta/120;
         // alert(direction);
         direction=-direction//direction取反，和FF浏览器的状态达成一致了，向下+1，向上-1
-        number=number+direction;//当前是第几篇
+        numbercache=numbercache+direction;//在时间间隔间隔中滚了多少
+        });
+    }
+    var int=window.setInterval("clock()",1000)//1秒检测一下  向上还是向下
+}
+function clock(){
+        if(numbercache>0){
+            number=number+1;
+            numbercache=0;
+        }else if(numbercache<0){
+            number=number-1;
+            numbercache=0;
+        }else if(numbercache==0){
+            numbercache=0;
+        }
+
         if(number<1){number=number%3+3};//当前页面循环
         if(number>3){number=number%3};
         dingwei(number);//进行定位
-        });
-    }
+
 }
 function dingwei(num){
     number=num//设置成当前页面号    
