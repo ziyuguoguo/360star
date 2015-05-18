@@ -129,7 +129,26 @@ function preImg(sourceId, targetId) {
 //                 element['on' + type] = handler;
 //             }
 // }
+function test(numbercache) {
+    alert("111111");
+    
+}
+function clock(){
+        if(numbercache>0){
+            number=number+1;
+            numbercache=0;
+        }else if(numbercache<0){
+            number=number-1;
+            numbercache=0;
+        }else if(numbercache==0){
+            numbercache=0;
+        }
 
+        if(number<1){number=number%3+3};//当前页面循环
+        if(number>3){number=number%3};
+        dingwei(number);//进行定位
+
+}
 window.onload=function(){
     //这里的滚轮事件暂且不考虑IE10以下的浏览器。因为我使用了CSS3 
     //firefox的滚轮事件比较特殊，滚轮事件有特殊的名字DOMMouseScroll
@@ -139,6 +158,9 @@ window.onload=function(){
     //用navigator.userAgent.indexOf('Firefox') >= 0判断是否为firefox
     var mousewheel="mousewheel";//除了火狐 滚轮事件都叫mousewheel
     number=1;//当前页面是哪页，设置成全局变量！好让后面dingwei函数中的number=num捕获到
+
+    numbercache=0;//记录滚轮在设置好的间隔中（interval）滚动了多少，若大于0，
+    //则当前页面+1（ number=number+1;）设置成全局变量，function clock()便于捕获，清零。
 
     //滚到第三页的时候页面向上飘了1600，这里出现一个兼容问题！
     //在FireFox/IE中定位时 ，就是在
@@ -159,12 +181,7 @@ window.onload=function(){
         mousewheel="DOMMouseScroll"//火狐的滚轮叫DOMMouseScroll向下划+3向上滑-3
         window.addEventListener(mousewheel,function(event) {  
         var direction=event.detail/3;//向下+1，向上-1
-        number=number+direction;//当前是第几篇
-        if(number<1){number=number%3+3};//当前页面循环
-        if(number>3){number=number%3};
-        // alert(event.detail);
-
-        dingwei(number);//进行定位
+        numbercache=numbercache+direction;//在时间间隔间隔中滚了多少
         })
     }
     else {
@@ -175,12 +192,11 @@ window.onload=function(){
         var direction=ev.wheelDelta/120;
         // alert(ev.wheelDelta);
         direction=-direction//direction取反，和FF浏览器的状态达成一致，向下+1，向上-1
-        number=number+direction;//当前是第几篇
-        if(number<1){number=number%3+3};//当前页面循环
-        if(number>3){number=number%3};
-        dingwei(number);//进行定位
+        numbercache=numbercache+direction;//在时间间隔间隔中滚了多少
         });
     }
+    // var intervalId = window.setInterval(alert("1111"), 1000);
+    var int=window.setInterval("clock()",1000)//1秒检测一下  向上还是向下
 
 
     Drag("page3img");//进行拖拽
@@ -221,7 +237,8 @@ function dingwei(num){
                 </div>
         </div>
         <div class="header-top">
-                <h2>廉&nbsp;鑫</h2>
+            <!-- <input type="text" id="clock" > -->
+                <h2 style="margin:0px 0 5px 0; ">廉&nbsp;鑫</h2>
                 <small>家在天津&nbsp;武汉上学&nbsp;想去北京上班的 <br>前&nbsp;端&nbsp;攻&nbsp;城&nbsp;狮</small>
         </div>
     </div>
@@ -243,8 +260,8 @@ function dingwei(num){
                         <li><p>Birthday: <span>1993/12/28</span></p></li>
                         <li><p>Phone: <span>13026186735</span></p></li>
                         <li><p>Email:  <span><a href="mailto:623047470@qq.com">623047470@qq.com</a></span></p></li>
-                        <li><p>Github: <span><a href="https://github.com/l27390587">https://github.com/l27390587</a></span></p></li>
-                        <!-- <li><p>Address: <span>123 Ipsy Street, Lorem, Ipsy</span></p></li> -->
+                        <li><p>Github: <span><a href="https://github.com/l27390587/360star">https://github.com/l27390587/360star</a></span></p></li>
+                        <li><p>PS: <span>经过老师的提点，滚动效果进行了一次优化，建议点击上方Github获取最新代码</span></p></li>
                     </ul>
                 </div>
                 <div class="about-row-column" style="float:left;margin-left:10px;margin-top:40px;">
@@ -255,7 +272,8 @@ function dingwei(num){
         </div>
     </div>
     <div id="div3">
-        <div id="page3bg" class="page3bg">
+        <div style=" width:500px;margin:0 auto;position:relative;font-size:30px;color:#2b3b4b;margin-top:20px;">图片查看器（点击图片即可拖动）</div>
+        <div id="page3bg" class="page3bg" style="margin-top:30px;">
             <div  id="page3container"  class="page3container" style="">
                 <img id="page3img" name='images1'  src='images/background1.png'  style="left:0; top:0; position: absolute; cursor: pointer;" />
             </div>
